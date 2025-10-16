@@ -1,15 +1,14 @@
 import json
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from typing import List
-from datetime import datetime # Importar datetime para o timestamp
+from datetime import datetime
 
-from app.models.quiz import CategoryResult, FinalResult, UserAnswer
-from app.models.dashboard.dashboard_state import DashboardState # <-- NOVAS IMPORTAÇÕES
+from app.models.quiz import CategoryResult, UserAnswer, FinalResult
+
+from app.models.dashboard.dashboard_state import DashboardState
 
 app = FastAPI()
-# ... (configuração do CORS continua a mesma)
 origins = ['*']
 app.add_middleware(
     CORSMiddleware,
@@ -19,15 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Nomes dos arquivos de dados ---
 QUESTIONS_FILE = 'questions.json'
-DASHBOARD_FILE = 'dashboard_data.json'
-HISTORY_FILE = 'history.json' # <-- NOVO ARQUIVO DE HISTÓRICO
+DASHBOARD_FILE = 'app/dashboard_data.json'
+HISTORY_FILE = 'app/history.json'
 
 with open(QUESTIONS_FILE, 'r', encoding='utf-8') as f:
     questions_with_weights = json.load(f)
 
-# ... (constantes MAX_POINTS e category_max_points continuam as mesmas)
 MAX_POINTS = 76
 category_max_points = {"Social": 26, "Financeiro": 35, "Analítico": 15}
 
@@ -38,9 +35,8 @@ def load_dashboard_data() -> DashboardState:
 
 def save_dashboard_data(data: DashboardState):
     with open(DASHBOARD_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data.model_dump(), f, indent=2)
+        json.dump(data.model_dump(), f, indent=4)
 
-# --- Endpoint do Quiz (/result) MODIFICADO ---
 @app.post("/result", response_model=FinalResult)
 def calculate_result(answers: List[UserAnswer]):
     category_points = {}
@@ -92,7 +88,6 @@ def save_result_to_history(result: FinalResult):
     except (FileNotFoundError, json.JSONDecodeError):
         history = []
     
-    # Adiciona um timestamp ao resultado antes de salvar
     history_entry = {
         "timestamp": datetime.now().isoformat(),
         **result.model_dump()
@@ -112,11 +107,9 @@ async def get_history():
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
-# --- Endpoint de Reset MODIFICADO ---
 @app.post("/reset", response_model=DashboardState)
 async def reset_dashboard():
     """Restaura o painel para seu estado inicial."""
-    # Recria o dicionário do estado inicial para garantir que está sempre correto
     initial_state_dict = {
       "score_geral": 0.0,
       "pilares": [
@@ -146,8 +139,6 @@ async def reset_dashboard():
         
     return dashboard
 
-# (O resto do seu código, como /questions e update_dashboard_from_quiz, permanece o mesmo)
-# ...
 def update_dashboard_from_quiz(result: FinalResult):
     """Função interna para atualizar o painel com base no resultado do quiz."""
     dashboard = load_dashboard_data()
