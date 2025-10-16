@@ -4,8 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from datetime import datetime
 
-from app.models.quiz import CategoryResult, UserAnswer, FinalResult
-
+from app.models.quiz.category_result import CategoryResult
+from app.models.quiz.final_result import FinalResult
+from app.models.quiz.user_answer import UserAnswer
 from app.models.dashboard.dashboard_state import DashboardState
 
 app = FastAPI()
@@ -28,6 +29,19 @@ with open(QUESTIONS_FILE, 'r', encoding='utf-8') as f:
 MAX_POINTS = 76
 category_max_points = {"Social": 26, "Financeiro": 35, "Analítico": 15}
 
+questions_to_frontend = [
+    {
+        "texto": q["texto"],
+        "opcoes": [opt["resposta"] for opt in q["opcoes"]],
+        "categoria": q["categoria"]
+    }
+    for q in questions_with_weights
+]
+
+@app.get("/questions")
+async def get_questions():
+    return questions_to_frontend
+
 # --- Funções Auxiliares (load/save) ---
 def load_dashboard_data() -> DashboardState:
     with open(DASHBOARD_FILE, 'r', encoding='utf-8') as f:
@@ -36,6 +50,7 @@ def load_dashboard_data() -> DashboardState:
 def save_dashboard_data(data: DashboardState):
     with open(DASHBOARD_FILE, 'w', encoding='utf-8') as f:
         json.dump(data.model_dump(), f, indent=4)
+
 
 @app.post("/result", response_model=FinalResult)
 def calculate_result(answers: List[UserAnswer]):
