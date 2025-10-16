@@ -1,16 +1,16 @@
 [
   {
-    "timestamp": "2025-10-16T14:42:06.476139",
-    "total_points": 76,
+    "timestamp": "2025-10-16T15:13:42.853119",
+    "total_points": 75,
     "category_results": [
+      {
+        "category": "Financeiro",
+        "points": 34,
+        "percentage": 97.14285714285714
+      },
       {
         "category": "Anal\u00edtico",
         "points": 15,
-        "percentage": 100.0
-      },
-      {
-        "category": "Financeiro",
-        "points": 35,
         "percentage": 100.0
       },
       {
@@ -19,7 +19,7 @@
         "percentage": 100.0
       }
     ],
-    "score_percentage": 100.0,
+    "score_percentage": 98.68421052631578,
     "risk_level": "Baixo Risco",
     "recommended_decision": "Aprovar Cr\u00e9dito"
   }

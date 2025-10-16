@@ -15,22 +15,31 @@ function renderDashboard(data) {
   scoreBarEl.textContent = `${data.score_geral.toFixed(1)}%`;
 
   pilaresListEl.innerHTML = '';
-  badgesListEl.innerHTML = '';
   objetivosListEl.innerHTML = '';
+  badgesListEl.innerHTML = '';
 
+  // CORREÇÃO: Renderiza a lista de badges principal
+  if (data.badges) {
+    data.badges.forEach(badge => {
+      const badgeEl = document.createElement('div');
+      const conquistado = badge.nivel_atual > 0;
+      badgeEl.className = `badge-item ${conquistado ? 'conquistado' : ''}`;
+      badgeEl.title = badge.descricao; // Dica ao passar o mouse
+
+      badgeEl.innerHTML = `
+                <div class="badge-circle">${badge.nivel_atual}/${badge.niveis}</div>
+                <p>${badge.nome}</p>
+            `;
+      badgesListEl.appendChild(badgeEl);
+    });
+  }
+
+  // Renderiza Pilares e seus respectivos Objetivos
   data.pilares.forEach(pilar => {
-    // Renderiza Pilares
+    // Renderiza Pilar
     const pilarEl = document.createElement('div');
     pilarEl.innerHTML = `<h4>${pilar.nome} (${pilar.progresso.toFixed(1)}%)</h4><div class="progress-bar-outer"><div class="progress-bar-inner" style="width: ${pilar.progresso}%"></div></div>`;
     pilaresListEl.appendChild(pilarEl);
-
-    // Renderiza Badges do Pilar
-    pilar.badges.forEach(badge => {
-      const badgeEl = document.createElement('div');
-      badgeEl.className = `badge-item ${badge.nivel_atual > 0 ? 'conquistado' : ''}`;
-      badgeEl.innerHTML = `<div class="badge-circle">${badge.nivel_atual}/${badge.niveis}</div><p>${badge.nome}</p>`;
-      badgesListEl.appendChild(badgeEl);
-    });
 
     // Renderiza Objetivos do Pilar
     pilar.objetivos.forEach(obj => {
@@ -64,13 +73,22 @@ async function carregarTudo() {
       fetch(`${API_URL}/dashboard`),
       fetch(`${API_URL}/history`)
     ]);
+
+    if (!dashRes.ok) { // Adiciona verificação de erro para o dashboard
+      throw new Error(`Falha ao buscar dashboard: ${dashRes.statusText}`);
+    }
+    if (!histRes.ok) { // Adiciona verificação de erro para o histórico
+      throw new Error(`Falha ao buscar histórico: ${histRes.statusText}`);
+    }
+
     const dashData = await dashRes.json();
     const histData = await histRes.json();
+
     renderDashboard(dashData);
     renderHistory(histData);
   } catch (error) {
     console.error("Erro ao carregar dados:", error);
-    document.querySelector('.container').innerHTML = '<h1>Erro ao carregar dados da API.</h1>';
+    document.querySelector('.container').innerHTML = `<h1>Erro ao carregar dados da API.</h1><p>Verifique o console (F12) para mais detalhes.</p>`;
   }
 }
 

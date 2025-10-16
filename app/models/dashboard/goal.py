@@ -7,4 +7,3 @@ class Goal(BaseModel):
     nivel_atual: int = 0
     concluido: bool
     para_completar: str
-    
