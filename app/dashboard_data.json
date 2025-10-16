@@ -2,60 +2,123 @@
     "score_geral": 0.0,
     "pilares": [
         {
-            "nome": "Financeiro",
-            "progresso": 0.0
+            "id": "financeiro",
+            "nome": "Pilar Financeiro",
+            "progresso": 0,
+            "badges": [
+                {
+                    "id": "compromisso_fiscal",
+                    "nome": "Compromisso Fiscal",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "descricao": "Conquistado ao anexar documentos fiscais."
+                },
+                {
+                    "id": "organizacao",
+                    "nome": "Organização",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "descricao": "Conquistado ao conectar contas e manter reservas."
+                },
+                {
+                    "id": "preparado",
+                    "nome": "Preparado",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "descricao": "Conquistado por manter um bom histórico financeiro."
+                }
+            ],
+            "objetivos": [
+                {
+                    "id": "obj_sem_atraso",
+                    "descricao": "Não ter atraso de pagamentos",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "concluido": false,
+                    "para_completar": "Responda o quiz e não relate atrasos."
+                },
+                {
+                    "id": "obj_comprovacao_renda",
+                    "descricao": "Comprovação de renda",
+                    "concluido": false,
+                    "para_completar": "Anexar documentos fiscais dos últimos 3 meses."
+                },
+                {
+                    "id": "obj_reservas",
+                    "descricao": "Manter reservas financeiras",
+                    "concluido": false,
+                    "para_completar": "Conectar conta bancária do negócio."
+                }
+            ]
         },
         {
-            "nome": "Social",
-            "progresso": 0.0
+            "id": "analitico",
+            "nome": "Pilar Analítico",
+            "progresso": 0,
+            "badges": [
+                {
+                    "id": "estabilidade",
+                    "nome": "Estabilidade",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "descricao": "Conquistado por tempo de residência e estabilidade."
+                },
+                {
+                    "id": "gestao_inteligente",
+                    "nome": "Gestão Inteligente",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "descricao": "Conquistado pela boa gestão e planejamento do negócio."
+                }
+            ],
+            "objetivos": [
+                {
+                    "id": "obj_moradia",
+                    "descricao": "Confirmar tempo de moradia",
+                    "concluido": false,
+                    "para_completar": "Informar o ano em que se mudou."
+                },
+                {
+                    "id": "obj_separar_financas",
+                    "descricao": "Separar finanças pessoais e do negócio",
+                    "concluido": false,
+                    "para_completar": "Conectar conta bancária do negócio."
+                }
+            ]
         },
         {
-            "nome": "Analítico",
-            "progresso": 0.0
-        }
-    ],
-    "proximos_objetivos": [
-        {
-            "id": 1,
-            "descricao": "Concluir a primeira análise de perfil",
-            "concluido": false
-        },
-        {
-            "id": 2,
-            "descricao": "Atingir 70% no pilar Financeiro",
-            "concluido": false
-        },
-        {
-            "id": 3,
-            "descricao": "Atingir 70% no pilar Social",
-            "concluido": false
-        },
-        {
-            "id": 4,
-            "descricao": "Atingir 70% no pilar Analítico",
-            "concluido": false
-        }
-    ],
-    "badges": [
-        {
-            "id": 1,
-            "nome": "Analista Iniciante",
-            "conquistado": false
-        },
-        {
-            "id": 2,
-            "nome": "Mestre das Finanças",
-            "conquistado": false
-        },
-        {
-            "id": 3,
-            "nome": "Bom de Papo",
-            "conquistado": false
-        },
-        {
-            "id": 4,
-            "nome": "Estrategista",
-            "conquistado": false
+            "id": "social",
+            "nome": "Pilar Social",
+            "progresso": 0,
+            "badges": [
+                {
+                    "id": "comprometimento_comunidade",
+                    "nome": "Comprometimento com a Comunidade",
+                    "niveis": 3,
+                    "nivel_atual": 0,
+                    "descricao": "Conquistado pela participação em projetos e associações."
+                }
+            ],
+            "objetivos": [
+                {
+                    "id": "obj_participar_projetos",
+                    "descricao": "Participar de projetos sociais",
+                    "concluido": false,
+                    "para_completar": "Anexar arquivos que comprovem."
+                },
+                {
+                    "id": "obj_recomendacao_membro",
+                    "descricao": "Obter recomendação de membro da comunidade",
+                    "concluido": false,
+                    "para_completar": "Anexar arquivos que comprovem."
+                },
+                {
+                    "id": "obj_associacao",
+                    "descricao": "Ser membro de uma associação local",
+                    "concluido": false,
+                    "para_completar": "Anexar arquivos que comprovem."
+                }
+            ]
         }
     ]
 }

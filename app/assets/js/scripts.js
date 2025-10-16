@@ -25,39 +25,21 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-// 1. Busca as perguntas na API e inicia o quiz (COM DIAGNÓSTICO DE ERRO)
+// 1. Busca as perguntas na API e inicia o quiz
 async function carregarPerguntas() {
     try {
         const response = await fetch(`${API_URL}/questions`);
-
-        // Verifica se o servidor respondeu com um código de erro (como 404 Not Found)
         if (!response.ok) {
             throw new Error(`O servidor respondeu com um erro: ${response.status} ${response.statusText}`);
         }
-
         const data = await response.json();
         perguntas = shuffleArray(data);
         mostrarPergunta();
-
     } catch (error) {
-        console.error("--- DETALHES DO ERRO ---");
-        console.error(error); // Isso irá imprimir o erro completo no console do navegador
-
-        let userMessage = "Falha ao carregar o quiz. Verifique se a API está no ar na porta 8084.";
-
-        // Fornece uma causa provável baseada no tipo de erro
-        if (error.message.includes("Failed to fetch")) {
-            userMessage += "<br><br><b>Causa Provável:</b> Problema de CORS ou o servidor parou. Verifique o console do navegador (pressione F12) para mensagens de erro em vermelho.";
-        } else if (error.message.includes("404")) {
-            userMessage += "<br><br><b>Causa Provável:</b> A API está funcionando, mas a rota <b>/questions</b> não foi encontrada no seu arquivo <b>main.py</b>.";
-        } else {
-            userMessage += `<br><br><b>Detalhe do Erro:</b> ${error.message}`;
-        }
-
-        perguntaTextoEl.innerHTML = userMessage;
+        console.error("Erro ao carregar perguntas:", error);
+        perguntaTextoEl.innerHTML = `Falha ao carregar o quiz. Verifique se a API está no ar e se a rota /questions existe.<br><br><b>Detalhe:</b> ${error.message}`;
     }
 }
-
 
 // 2. Exibe a pergunta atual e suas opções
 function mostrarPergunta() {
@@ -122,7 +104,9 @@ async function finalizarQuiz() {
             throw new Error(errorData.detail || 'Falha ao enviar resultado para a API.');
         }
 
-        window.location.href = '../index.html';
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Redireciona para o index.html que está na MESMA pasta.
+        window.location.href = 'index.html';
 
     } catch (error) {
         console.error("Erro ao finalizar o quiz:", error);

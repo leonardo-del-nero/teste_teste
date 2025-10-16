@@ -1,88 +1,89 @@
-// URL da sua API com a porta CORRETA.
 const API_URL = 'http://127.0.0.1:8084';
 
 // --- ELEMENTOS DO DOM ---
-const startBtn = document.getElementById("startBtn");
-const historyListEl = document.getElementById("historyList");
-const clearHistoryBtn = document.getElementById("clearHistory");
+const scoreBarEl = document.getElementById('score-geral-bar');
+const pilaresListEl = document.getElementById('pilares-list');
+const objetivosListEl = document.getElementById('objetivos-list');
+const badgesListEl = document.getElementById('badges-list');
+const historyListEl = document.getElementById('history-list');
+const resetBtn = document.getElementById('reset-btn');
 
-// --- FUNÇÕES ---
+// --- FUNÇÕES DE RENDERIZAÇÃO ---
+function renderDashboard(data) {
+  // Score Geral
+  scoreBarEl.style.width = `${data.score_geral.toFixed(1)}%`;
+  scoreBarEl.textContent = `${data.score_geral.toFixed(1)}%`;
 
-/**
- * Busca os dados do histórico da API e os exibe na tela.
- */
-async function carregarHistorico() {
-  try {
-    const response = await fetch(`${API_URL}/history`);
-    if (!response.ok) {
-      throw new Error('Não foi possível buscar o histórico da API.');
-    }
-    const historico = await response.json();
+  pilaresListEl.innerHTML = '';
+  badgesListEl.innerHTML = '';
+  objetivosListEl.innerHTML = '';
 
-    // Limpa a lista antes de adicionar os novos itens
-    historyListEl.innerHTML = '';
+  data.pilares.forEach(pilar => {
+    // Renderiza Pilares
+    const pilarEl = document.createElement('div');
+    pilarEl.innerHTML = `<h4>${pilar.nome} (${pilar.progresso.toFixed(1)}%)</h4><div class="progress-bar-outer"><div class="progress-bar-inner" style="width: ${pilar.progresso}%"></div></div>`;
+    pilaresListEl.appendChild(pilarEl);
 
-    if (historico.length === 0) {
-      historyListEl.textContent = "Nenhuma simulação realizada ainda.";
-      return;
-    }
-
-    // Inverte o array para mostrar os resultados mais recentes primeiro
-    historico.slice().reverse().forEach(item => {
-      const data = new Date(item.timestamp);
-      const dataFormatada = data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR');
-
-      const historyItemDiv = document.createElement('div');
-      historyItemDiv.className = 'history-item'; // Classe do seu CSS
-
-      historyItemDiv.innerHTML = `
-                <div>
-                    <strong>${item.recommended_decision}</strong>
-                    <div class="small" style="color: var(--muted); font-size: 12px;">${dataFormatada}</div>
-                </div>
-                <div style="text-align:right">
-                    <div>Score: ${item.score_percentage.toFixed(1)}%</div>
-                    <div class="small" style="color: var(--muted); font-size: 12px;">Risco: ${item.risk_level}</div>
-                </div>
-            `;
-      historyListEl.appendChild(historyItemDiv);
+    // Renderiza Badges do Pilar
+    pilar.badges.forEach(badge => {
+      const badgeEl = document.createElement('div');
+      badgeEl.className = `badge-item ${badge.nivel_atual > 0 ? 'conquistado' : ''}`;
+      badgeEl.innerHTML = `<div class="badge-circle">${badge.nivel_atual}/${badge.niveis}</div><p>${badge.nome}</p>`;
+      badgesListEl.appendChild(badgeEl);
     });
 
-  } catch (error) {
-    console.error("Erro ao carregar histórico:", error);
-    historyListEl.textContent = "Erro ao carregar o histórico. Verifique se a API está rodando na porta 8084.";
-  }
+    // Renderiza Objetivos do Pilar
+    pilar.objetivos.forEach(obj => {
+      const objEl = document.createElement('li');
+      objEl.className = obj.concluido ? 'concluido' : '';
+      objEl.textContent = obj.descricao;
+      objetivosListEl.appendChild(objEl);
+    });
+  });
 }
 
-/**
- * Limpa o histórico no backend e atualiza a tela.
- */
-async function limparHistorico() {
-  if (!confirm("Tem certeza que deseja limpar todo o histórico de simulações?")) {
+function renderHistory(data) {
+  historyListEl.innerHTML = '';
+  if (!data || data.length === 0) {
+    historyListEl.innerHTML = '<p>Nenhuma simulação realizada ainda.</p>';
     return;
   }
+  data.slice().reverse().forEach(item => {
+    const itemEl = document.createElement('div');
+    itemEl.className = 'history-item';
+    const date = new Date(item.timestamp);
+    itemEl.innerHTML = `<div><strong>${item.recommended_decision}</strong><div class="small">${date.toLocaleString('pt-BR')}</div></div><div>Score: ${item.score_percentage.toFixed(1)}%</div>`;
+    historyListEl.appendChild(itemEl);
+  });
+}
 
+// --- LÓGICA PRINCIPAL ---
+async function carregarTudo() {
   try {
-    await fetch(`${API_URL}/reset`, { method: 'POST' });
-    // Após limpar, recarrega o histórico (que agora estará vazio).
-    carregarHistorico();
+    const [dashRes, histRes] = await Promise.all([
+      fetch(`${API_URL}/dashboard`),
+      fetch(`${API_URL}/history`)
+    ]);
+    const dashData = await dashRes.json();
+    const histData = await histRes.json();
+    renderDashboard(dashData);
+    renderHistory(histData);
   } catch (error) {
-    console.error("Erro ao limpar histórico:", error);
-    alert("Não foi possível limpar o histórico.");
+    console.error("Erro ao carregar dados:", error);
+    document.querySelector('.container').innerHTML = '<h1>Erro ao carregar dados da API.</h1>';
   }
 }
 
+async function resetarTudo() {
+  if (!confirm('Deseja resetar todo o progresso e histórico?')) return;
+  try {
+    await fetch(`${API_URL}/reset`, { method: 'POST' });
+    carregarTudo();
+  } catch (error) {
+    console.error("Erro ao resetar:", error);
+  }
+}
 
-// --- EVENTOS E INICIALIZAÇÃO ---
-
-// Quando o botão "Iniciar Simulação" for clicado, redireciona para a página do quiz.
-startBtn.addEventListener("click", () => {
-  // Redireciona para a página do quiz que está na mesma pasta.
-  window.location.href = "quiz.html";
-});
-
-// Adiciona o evento para o botão de limpar histórico.
-clearHistoryBtn.addEventListener("click", limparHistorico);
-
-// Assim que o DOM da página carregar, busca e exibe o histórico.
-document.addEventListener('DOMContentLoaded', carregarHistorico);
+// --- EVENTOS ---
+document.addEventListener('DOMContentLoaded', carregarTudo);
+resetBtn.addEventListener('click', resetarTudo);
