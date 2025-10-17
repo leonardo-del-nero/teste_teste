@@ -70,8 +70,8 @@ function renderHistory(data) {
 async function carregarTudo() {
   try {
     const [dashRes, histRes] = await Promise.all([
-      fetch(`${API_URL}/dashboard`),
-      fetch(`${API_URL}/history`)
+      fetch(`${API_URL}/api/dashboard`),
+      fetch(`${API_URL}/api/history`)
     ]);
 
     if (!dashRes.ok) { // Adiciona verificação de erro para o dashboard
@@ -95,7 +95,7 @@ async function carregarTudo() {
 async function resetarTudo() {
   if (!confirm('Deseja resetar todo o progresso e histórico?')) return;
   try {
-    await fetch(`${API_URL}/reset`, { method: 'POST' });
+    await fetch(`${API_URL}/api/reset`, { method: 'POST' });
     carregarTudo();
   } catch (error) {
     console.error("Erro ao resetar:", error);
