@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 app.include_router(quiz.router, prefix="/api/quiz", tags=["Quiz"])
-app.include_router(dashboard.app, prefix="/api", tags=["Dashboard & History"])
+app.include_router(dashboard.router, prefix="/api", tags=["Dashboard & History"])
 
 @app.get("/", tags=["Root"])
 async def read_root():
