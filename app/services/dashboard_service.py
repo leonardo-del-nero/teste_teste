@@ -101,7 +101,7 @@ def update_dashboard_from_quiz(result: FinalResult, answers: List[UserAnswer]):
                 nivel_conquistado = regra["respostas"].get(answer_text, 0)
                 badge.nivel_atual = max(badge.nivel_atual, nivel_conquistado)
 
-                if badge.nivel_atual > 0:
+                if badge.nivel_atual >= 2:
                     for pilar in dashboard.pilares:
                         objetivo = next((o for o in pilar.objetivos if o.id == regra["obj_id"]), None)
                         if objetivo:

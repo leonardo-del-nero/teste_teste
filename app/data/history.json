@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "timestamp": "2025-10-18T01:03:52.701012",
+    "total_points": 69,
+    "category_results": [
+      {
+        "category": "Social",
+        "points": 26,
+        "percentage": 100.0
+      },
+      {
+        "category": "Financeiro",
+        "points": 28,
+        "percentage": 80.0
+      },
+      {
+        "category": "Anal\u00edtico",
+        "points": 15,
+        "percentage": 100.0
+      }
+    ],
+    "score_percentage": 90.78947368421053,
+    "risk_level": "Baixo Risco",
+    "recommended_decision": "Aprovar Cr\u00e9dito"
+  }
+]
