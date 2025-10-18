@@ -6,7 +6,7 @@ from app.models.quiz.final_result import FinalResult
 from app.models.quiz.category_result import CategoryResult
 from app.services import dashboard_service
 
-QUESTIONS_FILE = 'questions.json'
+QUESTIONS_FILE = os.path.join('app', 'data', 'questions.json')
 
 with open(QUESTIONS_FILE, 'r', encoding='utf-8') as f:
     questions_with_weights = json.load(f)

@@ -1,5 +1,5 @@
 // --- Constantes e Variáveis de Estado ---
-const API_URL = 'http://127.0.0.1:8084';
+const API_URL = 'http://127.0.0.1:8084/api';
 
 // Elementos do DOM
 const quizContainerEl = document.getElementById('quiz-container');
@@ -45,7 +45,7 @@ async function carregarPerguntas() {
 function mostrarPergunta() {
     quizContainerEl.classList.remove('fade-out');
     const pergunta = perguntas[indicePerguntaAtual];
-    const opcoes = pergunta.opcoes;
+    const opcoes = shuffleArray(pergunta.opcoes);
 
     progressHeaderEl.innerText = `Pergunta ${indicePerguntaAtual + 1} de ${perguntas.length}`;
     perguntaTextoEl.innerText = pergunta.texto;

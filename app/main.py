@@ -22,3 +22,4 @@ app.include_router(dashboard.router, prefix="/api", tags=["Dashboard & History"]
 @app.get("/", tags=["Root"])
 async def read_root():
     return {"message": "Welcome to the Colmeia API!"}
+
