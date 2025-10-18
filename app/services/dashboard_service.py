@@ -14,8 +14,17 @@ INITIAL_DASHBOARD_FILE = os.path.join(DATA_DIR, 'dashboard_data_initial.json')
 
 
 def load_dashboard_data() -> DashboardState:
-    with open(DASHBOARD_FILE, 'r', encoding='utf-8') as f:
-        return DashboardState(**json.load(f))
+    try:
+        with open(DASHBOARD_FILE, 'r', encoding='utf-8') as f:
+            return DashboardState(**json.load(f))
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Se o arquivo principal falhar, carrega o inicial como fallback
+        with open(INITIAL_DASHBOARD_FILE, 'r', encoding='utf-8') as f:
+            initial_data = json.load(f)
+            # Salva o estado inicial para corrigir o arquivo corrompido
+            with open(DASHBOARD_FILE, 'w', encoding='utf-8') as df:
+                json.dump(initial_data, df, indent=2)
+            return DashboardState(**initial_data)
 
 def save_dashboard_data(data: DashboardState):
     with open(DASHBOARD_FILE, 'w', encoding='utf-8') as f:
